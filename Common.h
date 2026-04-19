@@ -4,6 +4,6 @@ struct Position {
     int x, y;
 };
 struct Move {
-    Position from, to;
+    Position from, to;  
 };
 #endif

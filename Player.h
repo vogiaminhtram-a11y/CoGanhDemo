@@ -36,7 +36,7 @@ class Player {
             }
         }
         if (AvailableMoves.empty()) {
-            return {-1, -1, -1, -1}; 
+            return {{-1, -1}, {-1, -1}}; 
         }
         Move mv = AvailableMoves[rand()%AvailableMoves.size()];
         return mv;

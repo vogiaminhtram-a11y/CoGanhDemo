@@ -26,7 +26,7 @@ class Game {
         }
         return false;
     }
-    bool isGameOver(int noCaptureCount, int &winner) {
+    bool isGameOver(int &winner) {
         bool hasMove1 = hasMove(1);
         bool hasMove2 = hasMove(-1);
         // 1. hết nước đi
@@ -47,17 +47,11 @@ class Game {
             winner=1;
             return true;
         }
-        // 3. hòa do không giao tranh
-        if (noCaptureCount >= 1000) {
-            winner=0;
-            return true;
-        } 
         return false;
     }
-    int process (Player &Player1, Player &Player2, int &draw, Statistics &Player1_Stat,Statistics &Player2_Stat) {
-        int noCaptureCount = 0;
+    int process (Player &Player1, Player &Player2, Statistics &Player1_Stat,Statistics &Player2_Stat) {
         int winner=0;
-        while (!isGameOver(noCaptureCount,winner)) {
+        while (!isGameOver(winner)) {
             //b.Xuat();
             if(currentPlayer == 1) Player1_Stat.update(b, coganh, 1);
             else Player2_Stat.update(b, coganh, -1);
@@ -67,7 +61,7 @@ class Game {
             } else {
                 mv = Player2.PlayerMove(-1, b);
             }
-            if (mv.from.x == -1) {
+            if (!b.InBound(mv.from) || !b.InBound(mv.to)) {
                 winner = -currentPlayer;
                 break;
             }
@@ -78,10 +72,6 @@ class Game {
             b.set_Board(mv.from, 0);
             // áp dụng luật
             coganh.applyRules(mv.to, currentPlayer, b);
-            //sau move
-            int after = b.demQuan(1) + b.demQuan(-1);
-            if (after < before) noCaptureCount = 0;
-            else noCaptureCount++;
             // đổi lượt
             currentPlayer *= -1;
         }
@@ -89,11 +79,10 @@ class Game {
             Player2.set_win();
             return -1;
         }
-        else if (winner==1) {
+        else {
             Player1.set_win();
             return 1;
         } 
-        else draw++;
         return 0;
         //b.Xuat();
     }
